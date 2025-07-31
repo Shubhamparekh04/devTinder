@@ -1,18 +1,32 @@
 const express = require("express");
 const app = express();
 
+const connectDB = require("./config/database");
+const validateSignupData = require("../src/utils/validation");
 
-app.use("/test",(req,res)=>{
-    res.send("Test");
-})
+const cookieParser = require("cookie-parser");
 
-app.use("/",(req,res)=>{
-    res.send("Dashboard");
-})
+app.use(express.json());
+app.use(cookieParser());
 
+const authRouter = require("./routes/auth");
+const profileRouter = require("./routes/profile");
+const requestRouter = require("./routes/request");
+const userRouter = require("./routes/user");
 
+app.use("/", authRouter);
+app.use("/", profileRouter);
+app.use("/", requestRouter);
+app.use("/", userRouter);
 
+connectDB()
+  .then(() => {
+    console.log("Database Connected...!");
 
-app.listen(3000,()=>{
-    console.log("Server running on 3000 port...!!!");
-})
+    app.listen(7777, () => {
+      console.log("Server running on port:7777");
+    });
+  })
+  .catch((err) => {
+    console.error("Database cant connect...!");
+  });
