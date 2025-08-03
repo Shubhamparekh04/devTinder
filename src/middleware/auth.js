@@ -3,9 +3,12 @@ const jwt = require("jsonwebtoken");
 
 const userAuth = async (req, res, next) => {
   try {
-    console.log("middleware checking...!");
-
     const { token } = req.cookies;
+
+    if (!token) {
+      return res.status(401).send("Kindly login first...!");
+    }
+
     const decoded = jwt.verify(token, "SECRET_KEY");
 
     const user = await User.findById(decoded._id);

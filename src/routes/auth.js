@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
-const {validateSignupData} = require("../utils/validation");
+const { validateSignupData } = require("../utils/validation");
 const userAuth = require("../middleware/auth");
 const validator = require("validator");
 const authRouter = express.Router();
@@ -19,8 +19,10 @@ authRouter.post("/signup", async (req, res) => {
       emailId,
       password: passwordHash,
     });
-    await user.save();
-    res.status(201).send("Data added...!");
+    const savedUser = await user.save();
+    let token = await savedUser.getJWT();
+    res.cookie("token", token);
+    res.status(201).json({ message: "Data added...!", data: savedUser });
   } catch (err) {
     res.status(400).send("ERROR: " + err.message);
   }
@@ -33,7 +35,7 @@ authRouter.post("/login", async (req, res) => {
     let user = await User.findOne({ emailId });
 
     if (!user) {
-      throw new Error("User not existed...!");
+      throw new Error("Invalid Credentials...!");
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
@@ -47,11 +49,10 @@ authRouter.post("/login", async (req, res) => {
 
       //send token to client
       res.cookie("token", token);
-
-      res.status(200).send("Login successfull...!");
+      res.status(200).send(user);
     }
   } catch (err) {
-    res.status(400).send("ERROR:" + err.message);
+    res.status(400).send("ERROR: " + err.message);
   }
 });
 

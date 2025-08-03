@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      lowercase: true,
+      // lowercase: true,
       validate(value) {
         if (!["male", "female", "other"].includes(value)) {
           throw new Error("Gender data not valid...!");
@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema(
     photoUrl: {
       type: String,
       default:
-        "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.vhv.rs%2Fviewpic%2FioJThwo_men-profile-icon-png-image-free-download-searchpng%2F&psig=AOvVaw273v1nuuFzzGHE-EZ9_mDK&ust=1753539590113000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCPC-rZSa2I4DFQAAAAAdAAAAABAE",
+        "https://media.istockphoto.com/id/2212478710/vector/faceless-male-avatar-in-hoodie-illustration.jpg?s=612x612&w=0&k=20&c=Wlwpp5BUnzbzXxaCT0a7WqP_JvknA-JtOhBoKDpQMHE=",
       validate(value) {
         if (!validator.isURL(value)) {
           throw new Error("Invalid Photo URL:" + value);
